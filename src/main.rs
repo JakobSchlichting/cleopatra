@@ -1,5 +1,15 @@
 use std::{char, collections::HashMap};
 
+fn cesar_shift(c: char, offset: usize, alphabet: &str) -> char {
+    match alphabet.find(c) {
+        None => c,
+        Some(index) => {
+            let new_c: String = alphabet.chars().skip((index + offset) % alphabet.len()).take(1).collect();
+            new_c.chars().last().unwrap()
+        }
+    }
+}
+
 fn main() {
     let input = include_str!("../input.txt");
     let alphabet: &'static str = "abcdefghijklmnopqrstuvwxyz";
@@ -27,17 +37,6 @@ fn main() {
     println!("E index:   {}", e_index);
     let offset = max_index + e_index;
     println!("Offset:    {}", offset);
-
-    let clear_text: String = input.to_lowercase().chars().map(|c| {
-        match alphabet.find(c) {
-            None => c,
-            Some(index) => {
-                println!("Index {}, offset {} => {}", index, offset, (index + offset) % alphabet.len());
-                let new_c: String = alphabet.chars().skip((index + offset) % alphabet.len()).take(1).collect();
-                println!("Changing '{}' to '{}'", c, new_c);
-                new_c.chars().last().unwrap()
-            }
-        }
-    }).collect();
+    let clear_text: String = input.to_lowercase().chars().map(|c| cesar_shift(c, offset, alphabet)).collect();
     println!("Klartext: {}", clear_text);
 }
